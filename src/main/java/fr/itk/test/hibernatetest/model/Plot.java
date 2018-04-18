@@ -1,5 +1,7 @@
 package fr.itk.test.hibernatetest.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -13,6 +15,7 @@ public class Plot {
     private String name;
 
     @ManyToOne
+    @JsonIgnore
     private Farm farm;
 
     protected Plot() {

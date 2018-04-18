@@ -13,9 +13,11 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Service
+@Transactional
 public class JobService {
 
     private static Logger logger = LoggerFactory.getLogger(Application.class);
@@ -26,7 +28,6 @@ public class JobService {
     @Autowired
     private EntityManager em;
 
-    @Transactional
     @Async
     public CompletableFuture<String> launchAsync(int n) {
 
@@ -34,10 +35,14 @@ public class JobService {
         return CompletableFuture.completedFuture("OK");
     }
 
-    @Transactional
     public String launchSync(int n) {
         launchJob(n);
         return "OK";
+    }
+
+    public void updateGrower(Long id, String newName) {
+        Optional<Grower> grower = growerRepository.findById(id);
+        grower.ifPresent(e -> e.setName(newName));
     }
 
     private void launchJob(int n) {
@@ -45,12 +50,12 @@ public class JobService {
 
 
             logger.info("launching job");
-            Grower grower = new Grower("toto");
+            Grower grower = new Grower("toto" + j);
 
             for (int i = 0; i < n; i++) {
-                Farm farm = new Farm("my awesome farm");
-                Plot plot = new Plot("my awesome plot");
-                Plot plot2 = new Plot("my second plot");
+                Farm farm = new Farm("my awesome farm" + i);
+                Plot plot = new Plot("my awesome plot" + i);
+                Plot plot2 = new Plot("my second awesome plot" + i);
 
                 plot.setFarm(farm);
                 farm.addPlot(plot);
@@ -63,23 +68,23 @@ public class JobService {
             }
 
             growerRepository.save(grower);
-
-            logger.info("grower in context: {}", em.contains(grower));
-            logger.info("farms in context: {}", em.contains(grower.getFarms().get(0)));
-            logger.info("plots in context: {}", em.contains(grower.getFarms().get(0).getPlots().get(0)));
-
-            Grower grower2 = growerRepository.findByName("toto");
-            logger.info("grower in context: {}", em.contains(grower2));
-            logger.info("farms in context: {}", em.contains(grower2.getFarms().get(0)));
-            logger.info("plots in context: {}", em.contains(grower2.getFarms().get(0).getPlots().get(0)));
-
-            Plot plot2 = new Plot("my second plot");
-            grower2.getFarms().get(0).addPlot(plot2);
-            plot2.setFarm(grower2.getFarms().get(0));
-            logger.info("grower: {}", grower2);
-
-            Grower grower3 = growerRepository.findByName("toto");
-            logger.info("grower: {}", grower3);
+//
+//            logger.info("grower in context: {}", em.contains(grower));
+//            logger.info("farms in context: {}", em.contains(grower.getFarms().get(0)));
+//            logger.info("plots in context: {}", em.contains(grower.getFarms().get(0).getPlots().get(0)));
+//
+//            Grower grower2 = growerRepository.findByName("toto");
+//            logger.info("grower in context: {}", em.contains(grower2));
+//            logger.info("farms in context: {}", em.contains(grower2.getFarms().get(0)));
+//            logger.info("plots in context: {}", em.contains(grower2.getFarms().get(0).getPlots().get(0)));
+//
+//            Plot plot2 = new Plot("my second plot");
+//            grower2.getFarms().get(0).addPlot(plot2);
+//            plot2.setFarm(grower2.getFarms().get(0));
+//            logger.info("grower: {}", grower2);
+//
+//            Grower grower3 = growerRepository.findByName("toto");
+//            logger.info("grower: {}", grower3);
         }
     }
 
