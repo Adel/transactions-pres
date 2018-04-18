@@ -1,7 +1,7 @@
 package fr.itk.test.hibernatetest.controller;
 
 import fr.itk.test.hibernatetest.Application;
-import fr.itk.test.hibernatetest.dto.GrowerDTO;
+import fr.itk.test.hibernatetest.model.Grower;
 import fr.itk.test.hibernatetest.service.JobService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
-public class LaunchController {
+public class MainController {
     private static Logger logger = LoggerFactory.getLogger(Application.class);
 
     @Autowired
@@ -21,7 +21,7 @@ public class LaunchController {
     public CompletableFuture<String> launch() {
         return jobService.launchAsync(10).thenApply(status -> {
             logger.info("job status - > {}", status);
-            return "{" + status + "}";
+            return status;
         });
     }
 
@@ -31,7 +31,7 @@ public class LaunchController {
     }
 
     @RequestMapping(value = "/grower/{id}", method = RequestMethod.PATCH)
-    public void updateGrower(@PathVariable Long id, @RequestBody GrowerDTO dto) {
+    public void updateGrower(@PathVariable Long id, @RequestBody Grower dto) {
         jobService.updateGrower(id, dto.getName());
     }
 }

@@ -20,6 +20,11 @@ public class Grower {
     protected Grower() {
     }
 
+    public Grower(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Grower(String name) {
         this.name = name;
     }
