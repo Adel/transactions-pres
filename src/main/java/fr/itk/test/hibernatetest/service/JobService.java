@@ -8,10 +8,13 @@ import fr.itk.test.hibernatetest.repository.GrowerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 @Service
 public class JobService {
@@ -25,15 +28,16 @@ public class JobService {
     private EntityManager em;
 
     @Transactional
-    public void launch() {
+    @Async
+    public CompletableFuture<String> launch(int n) {
 
-        for (int j = 0; j < 50; j++) {
+        for (int j = 0; j < n; j++) {
 
 
             logger.info("launching job");
             Grower grower = new Grower("toto");
 
-            for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < n; i++) {
                 Farm farm = new Farm("my awesome farm");
                 Plot plot = new Plot("my awesome plot");
                 Plot plot2 = new Plot("my second plot");
@@ -67,5 +71,7 @@ public class JobService {
             Grower grower3 = growerRepository.findByName("toto");
             logger.info("grower: {}", grower3);
         }
+        return CompletableFuture.completedFuture("OK");
     }
+
 }
