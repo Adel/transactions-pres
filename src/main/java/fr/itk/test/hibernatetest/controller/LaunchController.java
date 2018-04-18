@@ -18,11 +18,16 @@ public class LaunchController {
     @Autowired
     private JobService jobService;
 
-    @RequestMapping(value = "/job/1", method = RequestMethod.POST)
+    @RequestMapping(value = "/job/async", method = RequestMethod.POST)
     public CompletableFuture<String> launch() {
-        return jobService.launch(10).thenApply(status -> {
+        return jobService.launchAsync(10).thenApply(status -> {
             logger.info("job status - > {}", status);
             return "{" + status + "}";
         });
+    }
+
+    @RequestMapping(value = "/job/sync", method = RequestMethod.POST)
+    public String simple() {
+        return jobService.launchSync(100);
     }
 }

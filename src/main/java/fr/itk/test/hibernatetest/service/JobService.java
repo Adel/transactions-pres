@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 @Service
 public class JobService {
@@ -29,8 +28,19 @@ public class JobService {
 
     @Transactional
     @Async
-    public CompletableFuture<String> launch(int n) {
+    public CompletableFuture<String> launchAsync(int n) {
 
+        launchJob(n);
+        return CompletableFuture.completedFuture("OK");
+    }
+
+    @Transactional
+    public String launchSync(int n) {
+        launchJob(n);
+        return "OK";
+    }
+
+    private void launchJob(int n) {
         for (int j = 0; j < n; j++) {
 
 
@@ -71,7 +81,6 @@ public class JobService {
             Grower grower3 = growerRepository.findByName("toto");
             logger.info("grower: {}", grower3);
         }
-        return CompletableFuture.completedFuture("OK");
     }
 
 }
