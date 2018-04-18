@@ -1,0 +1,15 @@
+# Use postgres/example user/password credentials
+version: '3.1'
+
+services:
+
+  db:
+    image: postgres
+    container_name: transactions_postgres
+    ports:
+      - "5432:5432"
+    restart: always
+#    environment:
+#      POSTGRES_PASSWORD: batch
+#      POSTGRES_USER: batch
+#      POSTGRES_DB: postgres
