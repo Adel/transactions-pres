@@ -1,6 +1,5 @@
 # Completable future
-apache tomcat 7: 10 000 default NIO threads
-
+apache tomcat 7: 10 000 default max connections, 200 max threads
 ## use task executor
 curl -X POST http://localhost:8080/job/async 
 ## use nio thread

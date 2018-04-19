@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -26,6 +27,9 @@ public class JobService {
     private GrowerRepository growerRepository;
 
     @Autowired DSLContext dsl;
+
+    @Autowired
+    private EntityManager em;
 
     @Async
     public CompletableFuture<String> launchAsync(int n) {
@@ -45,6 +49,13 @@ public class JobService {
             g.setName(newName);
             logger.info("updated name of - > {}", g);
         });
+    }
+
+    public void longUpdateToShowLock(Grower g) {
+        Optional<Grower> growerOptional = growerRepository.findById(g.getId());
+        growerOptional.ifPresent(e -> e.setName(g.getName()));
+        em.flush();
+        launchJob(2000);
     }
 
     private void launchJob(int n) {

@@ -34,4 +34,9 @@ public class MainController {
     public void updateGrower(@PathVariable Long id, @RequestBody Grower dto) {
         jobService.updateGrower(id, dto.getName());
     }
+
+    @RequestMapping(value = "/job/lockGrower", method = RequestMethod.POST)
+    public void longJob(@RequestBody Grower grower) {
+        jobService.longUpdateToShowLock(grower);
+    }
 }
